@@ -81,7 +81,7 @@ module Sorcery
 
           # Destroy access token after client logout
           def destroy_access_token
-            if @api_access_token.delete
+            if @api_access_token && @api_access_token.delete
               @api_access_token = nil
               true
             else

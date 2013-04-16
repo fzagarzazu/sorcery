@@ -21,12 +21,10 @@ module Sorcery
       # If all attempts to auto-login fail, the failure callback will be called.
       def require_login
         if !logged_in?
-          if ! Config.restful_json_api
-            if Config.save_return_to_url && request.get?
-              session[:return_to_url] = request.url
-            end
+          respond_to do |format|
+            format.html { redirect_to root_path, status: 401 }
+            format.json { render json: [], status: 401}
           end
-          self.send(Config.not_authenticated_action)
         end
       end
 
@@ -93,11 +91,8 @@ module Sorcery
       # You can override this method in your controllers,
       # or provide a different method in the configuration.
       def not_authenticated
-        if Config.restful_json_api
-          head :unauthorized
-        else
-          redirect_to root_path
-        end
+        head :unauthorized
+        redirect_to root_path, status: 401
       end
 
       # login a user instance
